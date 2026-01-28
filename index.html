@@ -1,127 +1,167 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <title>טויבא דויטשר - אוטומציה עסקית</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8" />
+<title>T.Doitsher - Automation Empire</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 
-  <style>
-    body {
-      background: linear-gradient(to bottom right, #0b1020, #05070f);
-    }
+<style>
+body {
+  background: radial-gradient(circle at top, #0b1328, #05070f);
+  overflow-x: hidden;
+}
 
-    /* Hero animation (Framer Motion replacement) */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.8s ease;
-    }
+/* Glow */
+.glow {
+  text-shadow: 0 0 15px rgba(0,255,255,.4), 0 0 40px rgba(120,0,255,.4);
+}
 
-    .fade-up.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  </style>
+/* Floating logo */
+.float {
+  animation: float 5s ease-in-out infinite;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+/* Fade in */
+.fade {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: .8s ease;
+}
+.fade.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Neon cards */
+.card {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  backdrop-filter: blur(12px);
+  transition: .3s;
+}
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 35px rgba(0,255,255,.25);
+}
+</style>
 </head>
 
 <body class="text-white px-6">
 
-<main class="min-h-screen">
+<main class="max-w-7xl mx-auto">
 
-  <!-- HERO -->
-  <section class="max-w-6xl mx-auto py-32 text-center">
-    <h1 id="hero-title"
-        class="fade-up text-5xl md:text-6xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-      אוטומציה עסקית שעובדת בשבילך
-    </h1>
+<!-- HERO -->
+<section class="text-center py-28">
 
-    <p class="mt-6 text-xl text-gray-300">
-      אני טויבא דויטשר – בונה מערכות אוטומטיות שחוסכות זמן, כסף ועצבים
-    </p>
+  <img src="logo.png" class="mx-auto w-56 mb-10 float drop-shadow-2xl">
 
-    <div class="mt-10 flex justify-center gap-4">
-      <a href="#contact" class="px-8 py-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 font-semibold">
-        דברי איתי
-      </a>
-      <a href="#projects" class="px-8 py-4 rounded-xl border border-cyan-400 text-cyan-300">
-        תיק עבודות
-      </a>
-    </div>
-  </section>
+  <h1 id="hero" class="fade text-5xl md:text-7xl font-extrabold glow bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+    אימפריית האוטומציה העסקית
+  </h1>
 
-  <!-- WHAT I DO -->
-  <section class="max-w-6xl mx-auto py-24 grid md:grid-cols-3 gap-8">
-    <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
-      <h3 class="text-xl font-semibold mb-2">אוטומציות לעסקים</h3>
-      <p class="text-gray-400">
-        פתרונות מותאמים אישית שעובדים ברקע – בלי התעסקות ידנית.
-      </p>
-    </div>
+  <p class="mt-8 text-xl text-gray-300 max-w-3xl mx-auto">
+    אני טויבא דויטשר — בונה מערכות אוטומטיות חכמות, מתקדמות ובלתי ניתנות לעצירה  
+    שחוסכות זמן, כסף, עובדים, טעויות — ומכניסות יותר רווח.
+  </p>
 
-    <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
-      <h3 class="text-xl font-semibold mb-2">חיבורים בין מערכות</h3>
-      <p class="text-gray-400">
-        פתרונות מותאמים אישית שעובדים ברקע – בלי התעסקות ידנית.
-      </p>
-    </div>
-
-    <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
-      <h3 class="text-xl font-semibold mb-2">טפסים חכמים ו-CRM</h3>
-      <p class="text-gray-400">
-        פתרונות מותאמים אישית שעובדים ברקע – בלי התעסקות ידנית.
-      </p>
-    </div>
-  </section>
-
-  <!-- PROJECTS -->
-  <section id="projects" class="max-w-6xl mx-auto py-24">
-    <h2 class="text-4xl font-bold mb-10">תיק עבודות</h2>
-
-    <div class="grid md:grid-cols-3 gap-6">
-
-      <a href="https://form.fillout.com/t/hxPcTnn2CVus" target="_blank"
-         class="p-6 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border border-white/10 hover:scale-105 transition">
-        פרויקט אוטומציה #1
-      </a>
-
-      <a href="https://form.fillout.com/t/3SJjK1C6dUus" target="_blank"
-         class="p-6 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border border-white/10 hover:scale-105 transition">
-        פרויקט אוטומציה #2
-      </a>
-
-      <a href="https://form.fillout.com/t/rfV33PGun3us" target="_blank"
-         class="p-6 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border border-white/10 hover:scale-105 transition">
-        פרויקט אוטומציה #3
-      </a>
-
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact" class="max-w-6xl mx-auto py-24 text-center">
-    <h2 class="text-4xl font-bold mb-6">בואי נבנה משהו חכם</h2>
-
-    <p class="text-gray-300 mb-8">
-      📧 t025959714@gmail.com <br />
-      📞 052-7179418
-    </p>
-
-    <a href="https://wa.me/972527179418"
-       class="inline-block px-10 py-4 bg-green-500 rounded-xl font-semibold text-black">
-      שלחי WhatsApp
+  <div class="mt-10 flex justify-center gap-5 flex-wrap">
+    <a href="#contact" class="px-10 py-4 bg-cyan-500 hover:bg-cyan-400 rounded-xl font-bold text-black">
+      דברי איתי עכשיו
     </a>
-  </section>
+    <a href="#projects" class="px-10 py-4 border border-cyan-400 rounded-xl text-cyan-300">
+      תיק עבודות חזק
+    </a>
+  </div>
+</section>
+
+<!-- POWER MESSAGE -->
+<section class="text-center py-14">
+  <h2 class="text-4xl font-bold glow mb-6">עסקים חכמים עובדים אוטומטי</h2>
+  <p class="text-gray-400 max-w-4xl mx-auto text-lg">
+    מערכות שמנהלות לידים, CRM, טפסים, שליחת הודעות, WhatsApp, דיוור חכם, חיבורים בין מערכות,  
+    Make, Airtable, ClickUp, בינה מלאכותית, צ'אטבוטים — הכל אוטומטי.
+  </p>
+</section>
+
+<!-- SERVICES -->
+<section class="grid md:grid-cols-3 gap-8 py-20">
+
+  <div class="card p-8 rounded-2xl">
+    <h3 class="text-2xl font-bold mb-3">⚙️ אוטומציות לעסקים</h3>
+    <p class="text-gray-400">
+      תהליכים חכמים שמחליפים עובדים, חוסכים טעויות ומעלים רווחים.
+    </p>
+  </div>
+
+  <div class="card p-8 rounded-2xl">
+    <h3 class="text-2xl font-bold mb-3">🔗 חיבורים בין מערכות</h3>
+    <p class="text-gray-400">
+      Make, CRM, טפסים, Google, WhatsApp, אימיילים — הכל מחובר.
+    </p>
+  </div>
+
+  <div class="card p-8 rounded-2xl">
+    <h3 class="text-2xl font-bold mb-3">🤖 AI וצ'אטבוטים</h3>
+    <p class="text-gray-400">
+      בינה מלאכותית שמדברת עם לקוחות ומנהלת לידים לבד.
+    </p>
+  </div>
+
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="py-24 text-center">
+
+  <h2 class="text-4xl font-bold glow mb-12">תיק עבודות מתקדם</h2>
+
+  <div class="grid md:grid-cols-3 gap-6">
+
+    <a href="https://form.fillout.com/t/hxPcTnn2CVus" target="_blank" class="card p-6 rounded-2xl">
+      🚀 מערכת אוטומציה חכמה #1
+    </a>
+
+    <a href="https://form.fillout.com/t/3SJjK1C6dUus" target="_blank" class="card p-6 rounded-2xl">
+      ⚡ מערכת חיבורים מתקדמת #2
+    </a>
+
+    <a href="https://form.fillout.com/t/rfV33PGun3us" target="_blank" class="card p-6 rounded-2xl">
+      🧠 מערכת AI חכמה #3
+    </a>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="text-center py-24">
+
+  <h2 class="text-4xl font-bold glow mb-6">
+    בואי נבנה את המערכת שתעבוד בשבילך
+  </h2>
+
+  <p class="text-gray-300 mb-6 text-lg">
+    📧 t025959714@gmail.com <br>
+    📞 052-7179418
+  </p>
+
+  <a href="https://wa.me/972527179418"
+     class="inline-block px-12 py-5 bg-green-500 hover:bg-green-400 rounded-xl font-bold text-black text-lg">
+    שלחי WhatsApp עכשיו 🚀
+  </a>
+
+</section>
 
 </main>
 
 <script>
-  // Animate hero title on load
-  window.addEventListener('load', () => {
-    document.getElementById('hero-title').classList.add('show');
-  });
+window.addEventListener('load', () => {
+  document.getElementById('hero').classList.add('show');
+});
 </script>
 
 </body>
