@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>טויבא דויטשר - אוטומציה עסקית</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #0b1020, #05070f);
+    }
+
+    /* Hero animation (Framer Motion replacement) */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.8s ease;
+    }
+
+    .fade-up.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body class="text-white px-6">
+
+<main class="min-h-screen">
+
+  <!-- HERO -->
+  <section class="max-w-6xl mx-auto py-32 text-center">
+    <h1 id="hero-title"
+        class="fade-up text-5xl md:text-6xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+      אוטומציה עסקית שעובדת בשבילך
+    </h1>
+
+    <p class="mt-6 text-xl text-gray-300">
+      אני טויבא דויטשר – בונה מערכות אוטומטיות שחוסכות זמן, כסף ועצבים
+    </p>
+
+    <div class="mt-10 flex justify-center gap-4">
+      <a href="#contact" class="px-8 py-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 font-semibold">
+        דברי איתי
+      </a>
+      <a href="#projects" class="px-8 py-4 rounded-xl border border-cyan-400 text-cyan-300">
+        תיק עבודות
+      </a>
+    </div>
+  </section>
+
+  <!-- WHAT I DO -->
+  <section class="max-w-6xl mx-auto py-24 grid md:grid-cols-3 gap-8">
+    <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
+      <h3 class="text-xl font-semibold mb-2">אוטומציות לעסקים</h3>
+      <p class="text-gray-400">
+        פתרונות מותאמים אישית שעובדים ברקע – בלי התעסקות ידנית.
+      </p>
+    </div>
+
+    <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
+      <h3 class="text-xl font-semibold mb-2">חיבורים בין מערכות</h3>
+      <p class="text-gray-400">
+        פתרונות מותאמים אישית שעובדים ברקע – בלי התעסקות ידנית.
+      </p>
+    </div>
+
+    <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
+      <h3 class="text-xl font-semibold mb-2">טפסים חכמים ו-CRM</h3>
+      <p class="text-gray-400">
+        פתרונות מותאמים אישית שעובדים ברקע – בלי התעסקות ידנית.
+      </p>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="max-w-6xl mx-auto py-24">
+    <h2 class="text-4xl font-bold mb-10">תיק עבודות</h2>
+
+    <div class="grid md:grid-cols-3 gap-6">
+
+      <a href="https://form.fillout.com/t/hxPcTnn2CVus" target="_blank"
+         class="p-6 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border border-white/10 hover:scale-105 transition">
+        פרויקט אוטומציה #1
+      </a>
+
+      <a href="https://form.fillout.com/t/3SJjK1C6dUus" target="_blank"
+         class="p-6 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border border-white/10 hover:scale-105 transition">
+        פרויקט אוטומציה #2
+      </a>
+
+      <a href="https://form.fillout.com/t/rfV33PGun3us" target="_blank"
+         class="p-6 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border border-white/10 hover:scale-105 transition">
+        פרויקט אוטומציה #3
+      </a>
+
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="max-w-6xl mx-auto py-24 text-center">
+    <h2 class="text-4xl font-bold mb-6">בואי נבנה משהו חכם</h2>
+
+    <p class="text-gray-300 mb-8">
+      📧 t025959714@gmail.com <br />
+      📞 052-7179418
+    </p>
+
+    <a href="https://wa.me/972527179418"
+       class="inline-block px-10 py-4 bg-green-500 rounded-xl font-semibold text-black">
+      שלחי WhatsApp
+    </a>
+  </section>
+
+</main>
+
+<script>
+  // Animate hero title on load
+  window.addEventListener('load', () => {
+    document.getElementById('hero-title').classList.add('show');
+  });
+</script>
+
+</body>
+</html>
