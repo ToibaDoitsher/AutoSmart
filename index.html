@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8" />
-<title>T.Doitsher - Automation Empire</title>
+<title>T.Doitsher — מערכות אוטומציה עסקיות</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -15,39 +15,39 @@ body {
 
 /* Glow */
 .glow {
-  text-shadow: 0 0 15px rgba(0,255,255,.4), 0 0 40px rgba(120,0,255,.4);
+  text-shadow: 0 0 15px rgba(0,255,255,.35), 0 0 40px rgba(120,0,255,.35);
 }
 
 /* Floating logo */
 .float {
-  animation: float 5s ease-in-out infinite;
+  animation: float 6s ease-in-out infinite;
 }
 @keyframes float {
   0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
+  50% { transform: translateY(-14px); }
 }
 
 /* Fade in */
 .fade {
   opacity: 0;
   transform: translateY(20px);
-  transition: .8s ease;
+  transition: .9s ease;
 }
 .fade.show {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Neon cards */
+/* Glass cards */
 .card {
   background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.1);
-  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.12);
+  backdrop-filter: blur(14px);
   transition: .3s;
 }
 .card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 35px rgba(0,255,255,.25);
+  transform: scale(1.04);
+  box-shadow: 0 0 40px rgba(0,255,255,.18);
 }
 </style>
 </head>
@@ -59,33 +59,42 @@ body {
 <!-- HERO -->
 <section class="text-center py-28">
 
-  <img src="logo.png" class="mx-auto w-56 mb-10 float drop-shadow-2xl">
+  <img src="logo.png" class="mx-auto w-60 mb-10 float drop-shadow-2xl">
 
   <h1 id="hero" class="fade text-5xl md:text-7xl font-extrabold glow bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-    אימפריית האוטומציה העסקית
+    מערכות אוטומציה עסקיות חכמות
   </h1>
 
-  <p class="mt-8 text-xl text-gray-300 max-w-3xl mx-auto">
-    אני טויבא דויטשר — בונה מערכות אוטומטיות חכמות, מתקדמות ובלתי ניתנות לעצירה  
-    שחוסכות זמן, כסף, עובדים, טעויות — ומכניסות יותר רווח.
+  <p class="mt-8 text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+    אני טויבא דויטשר — מתמחה בתכנון, בנייה והטמעה של מערכות אוטומציה מתקדמות לעסקים.  
+    אני מפתחת תהליכים חכמים שמחליפים עבודה ידנית, מצמצמים טעויות, חוסכים שעות עבודה יקרות  
+    ומאפשרים לבעלי עסקים להתמקד בצמיחה, מכירות והגדלת רווחים.
+  </p>
+
+  <p class="mt-6 text-gray-400 max-w-4xl mx-auto">
+    הפתרונות שלי מבוססים על Make, CRM, Airtable, ClickUp, טפסים חכמים, חיבורים בין מערכות,  
+    אוטומציות לתהליכי לידים, שיווק, ניהול לקוחות, תמיכה, גבייה ותפעול — הכל מותאם אישית לצרכים העסקיים שלך.
   </p>
 
   <div class="mt-10 flex justify-center gap-5 flex-wrap">
     <a href="#contact" class="px-10 py-4 bg-cyan-500 hover:bg-cyan-400 rounded-xl font-bold text-black">
-      דברי איתי עכשיו
+      צור קשר לייעוץ מקצועי
     </a>
     <a href="#projects" class="px-10 py-4 border border-cyan-400 rounded-xl text-cyan-300">
-      תיק עבודות חזק
+      תיק עבודות ומערכות
     </a>
   </div>
 </section>
 
-<!-- POWER MESSAGE -->
-<section class="text-center py-14">
-  <h2 class="text-4xl font-bold glow mb-6">עסקים חכמים עובדים אוטומטי</h2>
-  <p class="text-gray-400 max-w-4xl mx-auto text-lg">
-    מערכות שמנהלות לידים, CRM, טפסים, שליחת הודעות, WhatsApp, דיוור חכם, חיבורים בין מערכות,  
-    Make, Airtable, ClickUp, בינה מלאכותית, צ'אטבוטים — הכל אוטומטי.
+<!-- WHY ME -->
+<section class="text-center py-16">
+  <h2 class="text-4xl font-bold glow mb-6">למה לבחור באוטומציה מקצועית?</h2>
+
+  <p class="text-gray-400 max-w-5xl mx-auto text-lg leading-relaxed">
+    עסקים מצליחים כיום אינם עובדים קשה יותר — הם עובדים חכם יותר.  
+    באמצעות מערכות אוטומציה מתקדמות ניתן להחליף תהליכים ידניים, למנוע טעויות אנוש,  
+    לשפר זמני תגובה ללקוחות, לייעל תהליכי מכירה וליצור מערכת תפעולית יציבה, מדויקת ומדרגית.  
+    אוטומציה נכונה מאפשרת לעסק לצמוח מבלי להגדיל עומס, עובדים או הוצאות מיותרות.
   </p>
 </section>
 
@@ -93,23 +102,26 @@ body {
 <section class="grid md:grid-cols-3 gap-8 py-20">
 
   <div class="card p-8 rounded-2xl">
-    <h3 class="text-2xl font-bold mb-3">⚙️ אוטומציות לעסקים</h3>
-    <p class="text-gray-400">
-      תהליכים חכמים שמחליפים עובדים, חוסכים טעויות ומעלים רווחים.
+    <h3 class="text-2xl font-bold mb-3">⚙️ אוטומציות לתהליכים עסקיים</h3>
+    <p class="text-gray-400 leading-relaxed">
+      בניית תהליכים אוטומטיים לניהול לידים, לקוחות, משימות, גבייה, דיוור ומעקב —  
+      תהליכים שעובדים עבורך 24/7 ללא תלות בעובדים.
     </p>
   </div>
 
   <div class="card p-8 rounded-2xl">
     <h3 class="text-2xl font-bold mb-3">🔗 חיבורים בין מערכות</h3>
-    <p class="text-gray-400">
-      Make, CRM, טפסים, Google, WhatsApp, אימיילים — הכל מחובר.
+    <p class="text-gray-400 leading-relaxed">
+      חיבור בין CRM, טפסים, מערכות דיוור, WhatsApp API, Google, Airtable, ClickUp  
+      ומערכות נוספות — ליצירת מערכת אחידה, מסונכרנת וחכמה.
     </p>
   </div>
 
   <div class="card p-8 rounded-2xl">
-    <h3 class="text-2xl font-bold mb-3">🤖 AI וצ'אטבוטים</h3>
-    <p class="text-gray-400">
-      בינה מלאכותית שמדברת עם לקוחות ומנהלת לידים לבד.
+    <h3 class="text-2xl font-bold mb-3">🤖 בינה מלאכותית וצ'אטבוטים</h3>
+    <p class="text-gray-400 leading-relaxed">
+      שילוב AI וצ'אטבוטים חכמים למענה ללקוחות, סינון לידים, תיאום פגישות,  
+      שירות לקוחות אוטומטי והגדלת יחס ההמרה.
     </p>
   </div>
 
@@ -118,20 +130,25 @@ body {
 <!-- PROJECTS -->
 <section id="projects" class="py-24 text-center">
 
-  <h2 class="text-4xl font-bold glow mb-12">תיק עבודות מתקדם</h2>
+  <h2 class="text-4xl font-bold glow mb-12">תיק עבודות ומערכות שבניתי</h2>
+
+  <p class="text-gray-400 max-w-4xl mx-auto mb-10">
+    דוגמאות למערכות אוטומציה אמיתיות שנבנו עבור עסקים —  
+    מערכות לידים, CRM, טפסים חכמים, ניהול לקוחות, דיוור אוטומטי ותהליכים חכמים.
+  </p>
 
   <div class="grid md:grid-cols-3 gap-6">
 
     <a href="https://form.fillout.com/t/hxPcTnn2CVus" target="_blank" class="card p-6 rounded-2xl">
-      🚀 מערכת אוטומציה חכמה #1
+      📊 מערכת אוטומציה לניהול לידים
     </a>
 
     <a href="https://form.fillout.com/t/3SJjK1C6dUus" target="_blank" class="card p-6 rounded-2xl">
-      ⚡ מערכת חיבורים מתקדמת #2
+      ⚡ מערכת חיבורים בין מערכות CRM
     </a>
 
     <a href="https://form.fillout.com/t/rfV33PGun3us" target="_blank" class="card p-6 rounded-2xl">
-      🧠 מערכת AI חכמה #3
+      🧠 מערכת AI חכמה לשיווק ומכירות
     </a>
 
   </div>
@@ -141,18 +158,25 @@ body {
 <section id="contact" class="text-center py-24">
 
   <h2 class="text-4xl font-bold glow mb-6">
-    בואי נבנה את המערכת שתעבוד בשבילך
+    ייעוץ מקצועי למערכות אוטומציה
   </h2>
 
-  <p class="text-gray-300 mb-6 text-lg">
-    📧 t025959714@gmail.com <br>
-    📞 052-7179418
+  <p class="text-gray-300 mb-8 text-lg max-w-3xl mx-auto leading-relaxed">
+    אם את/ה מעוניין/ת לייעל תהליכים עסקיים, לחסוך זמן יקר ולהקים מערכת חכמה שעובדת עבורך —  
+    ניתן ליצור קשר במייל לייעוץ ראשוני, אפיון צרכים והצעת פתרון מותאמת אישית.
   </p>
 
-  <a href="https://wa.me/972527179418"
-     class="inline-block px-12 py-5 bg-green-500 hover:bg-green-400 rounded-xl font-bold text-black text-lg">
-    שלחי WhatsApp עכשיו 🚀
-  </a>
+  <p class="text-xl font-semibold text-cyan-300">
+    📧 
+    <a href="mailto:t025959714@gmail.com?subject=פנייה%20למערכת%20אוטומציה" 
+       class="underline hover:text-cyan-400">
+      t025959714@gmail.com
+    </a>
+  </p>
+
+  <p class="mt-4 text-gray-400">
+    📞 052-7179418
+  </p>
 
 </section>
 
