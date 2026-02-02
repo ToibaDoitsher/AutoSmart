@@ -3,61 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toiby AI | Professional Agent</title>
+    <title>Toiby AI | Live</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #030712; color: white; font-family: system-ui; }
-        .chat-box { height: 400px; overflow-y: auto; border: 1px solid #1e293b; background: #0f172a; padding: 20px; border-radius: 15px; }
-        .msg { margin-bottom: 15px; padding: 10px 15px; border-radius: 10px; max-width: 80%; }
-        .user { background: #06b6d4; color: black; align-self: flex-end; margin-right: auto; }
+        body { font-family: 'Heebo', sans-serif; background: #05070f; color: white; }
+        .chat-container { height: 400px; overflow-y: auto; border: 1px solid #1e293b; background: #0f172a; }
+        .msg { margin-bottom: 12px; padding: 10px 15px; border-radius: 15px; max-width: 80%; }
+        .user { background: #06b6d4; color: black; align-self: flex-end; }
         .bot { background: #1e293b; align-self: flex-start; }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen p-4">
-    <h1 class="text-3xl font-black mb-6 text-cyan-400">TOIBY AI SYSTEM</h1>
-    
     <div class="w-full max-w-md">
-        <div id="chat" class="chat-box flex flex-col mb-4">
-            <div class="msg bot">היי טויבי! המערכת עברה לשרת (Backend). עכשיו זה יעבוד ב-100%. מה נבדוק?</div>
+        <h1 class="text-3xl font-black text-center mb-6 text-cyan-400">TOIBY AI SYSTEM</h1>
+        <div id="chat" class="chat-container flex flex-col p-4 rounded-2xl mb-4">
+            <div class="msg bot">המערכת מוכנה. שלחי הודעה לבדיקה!</div>
         </div>
-        
         <div class="flex gap-2">
-            <input id="input" type="text" class="flex-1 bg-gray-900 border border-gray-700 p-3 rounded-lg outline-none focus:border-cyan-400" placeholder="שלחי הודעה...">
-            <button onclick="send()" class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-6 rounded-lg transition">שלח</button>
+            <input id="userInput" type="text" class="flex-1 bg-gray-900 border border-gray-700 p-3 rounded-xl outline-none" placeholder="מה לכתוב?">
+            <button onclick="send()" class="bg-cyan-500 text-black font-bold px-6 rounded-xl hover:bg-cyan-400 transition">שלח</button>
         </div>
-        <p id="status" class="text-xs text-gray-500 mt-2 text-center"></p>
+        <p id="loader" class="text-center text-xs text-cyan-500 mt-3 hidden italic">השרת מעבד נתונים...</p>
     </div>
 
     <script>
         async function send() {
-            const input = document.getElementById('input');
+            const input = document.getElementById('userInput');
             const chat = document.getElementById('chat');
-            const status = document.getElementById('status');
+            const loader = document.getElementById('loader');
             const text = input.value.trim();
+            
             if (!text) return;
 
+            // הצגת הודעת משתמש
             chat.innerHTML += `<div class="msg user">${text}</div>`;
             input.value = '';
-            status.innerText = "השרת מעבד את הבקשה...";
+            loader.classList.remove('hidden');
+            chat.scrollTop = chat.scrollHeight;
 
             try {
-                const res = await fetch('/api/chat', {
+                // קריאה לנתיב ה-API ב-Vercel
+                const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text })
+                    body: JSON.stringify({ text: text })
                 });
-                
-                const data = await res.json();
-                // השרת שלנו מחזיר את התשובה נקייה
-                const reply = data.reply || "לא התקבלה תשובה";
+
+                const data = await response.json();
+                const reply = data.reply || "המודל עדיין מתעורר... נסי שוב בעוד כמה שניות.";
                 
                 chat.innerHTML += `<div class="msg bot">${reply}</div>`;
-                status.innerText = "";
-            } catch (e) {
-                chat.innerHTML += `<div class="msg bot text-red-400">שגיאה בחיבור לשרת. וודאי שהעלית את תיקיית api.</div>`;
-                status.innerText = "";
+            } catch (error) {
+                console.error("Error:", error);
+                chat.innerHTML += `<div class="msg bot text-red-400">יש בעיה בתקשורת עם השרת. וודאי שהגדרת את ה-Environment Variable ב-Vercel.</div>`;
+            } finally {
+                loader.classList.add('hidden');
+                chat.scrollTop = chat.scrollHeight;
             }
-            chat.scrollTop = chat.scrollHeight;
         }
     </script>
 </body>
