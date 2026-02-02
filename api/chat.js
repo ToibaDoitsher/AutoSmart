@@ -1,44 +1,42 @@
 export default async function handler(req, res) {
-    // מאפשר רק בקשות POST
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method Not Allowed' });
-    }
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
     const { text } = req.body;
     const HF_TOKEN = process.env.HF_TOKEN;
 
     if (!HF_TOKEN) {
-        return res.status(500).json({ error: 'חסר HF_TOKEN בהגדרות Vercel' });
+        return res.status(500).json({ error: 'Missing HF_TOKEN' });
     }
 
     try {
-        // מודל Llama 3.2 - מהיר, חכם ותומך בעברית
-        const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct", {
+        // הכתובת החדשה והנתמכת
+        const url = "https://router.huggingface.co/hf-inference/v1/chat/completions";
+
+        const response = await fetch(url, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${HF_TOKEN}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                inputs: `<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\nענה בעברית: ${text}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n`,
-                parameters: { 
-                    max_new_tokens: 500,
-                    temperature: 0.7
-                },
-                options: {
-                    wait_for_model: true // קריטי: גורם לשרת לחכות שהמודל יטען
-                }
+                model: "meta-llama/Llama-3.2-3B-Instruct", // שם המודל
+                messages: [
+                    { role: "system", content: "ענה בעברית בלבד בצורה ברורה." },
+                    { role: "user", content: text }
+                ],
+                max_tokens: 500,
+                stream: false
             })
         });
 
         const data = await response.json();
 
         if (!response.ok) {
-            return res.status(response.status).json({ error: data.error || "שגיאה מהמודל" });
+            return res.status(response.status).json({ error: data.error || "Hugging Face Router Error" });
         }
 
-        // חילוץ התשובה בצורה בטוחה
-        const reply = Array.isArray(data) ? data[0].generated_text : data.generated_text;
+        // חילוץ התשובה מהפורמט החדש (choices[0].message.content)
+        const reply = data.choices[0].message.content;
         
         return res.status(200).json({ reply: reply.trim() });
 
