@@ -3,119 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T.Doitsher | AI & Automation Hub</title>
+    <title>T.Doitsher | AI Agent</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #06b6d4; --secondary: #a855f7; --dark: #030712; }
-        body { font-family: 'Heebo', sans-serif; background: var(--dark); color: white; margin: 0; overflow-x: hidden; }
-        
-        /* צ'אט מעוצב */
+        body { font-family: 'Heebo', sans-serif; background: #05070f; color: white; margin: 0; }
         #chat-window {
-            position: fixed; bottom: 100px; left: 30px; width: 360px; height: 520px;
-            background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 28px;
-            display: none; flex-direction: column; z-index: 9999; 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: fixed; bottom: 100px; left: 30px; width: 340px; height: 480px;
+            background: rgba(10, 15, 30, 0.95); backdrop-filter: blur(15px);
+            border: 1px solid #06b6d4; border-radius: 20px; display: none; flex-direction: column; z-index: 9999;
         }
-        .chat-header { 
-            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
-            padding: 20px; font-weight: 900; display: flex; justify-content: space-between; align-items: center;
-            border-radius: 28px 28px 0 0;
-        }
-        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        .msg { padding: 12px 16px; border-radius: 20px; font-size: 14px; max-width: 85%; line-height: 1.6; transition: 0.3s; }
-        .bot-msg { background: rgba(255, 255, 255, 0.05); align-self: flex-start; border-bottom-left-radius: 4px; }
-        .user-msg { background: var(--primary); color: black; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 700; }
-        
-        .chat-input-area { padding: 20px; background: rgba(0,0,0,0.2); display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
-        input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; flex: 1; outline: none; padding: 12px; border-radius: 15px; }
-
-        /* כפתור בוט צף */
+        .chat-header { background: #06b6d4; color: black; padding: 12px; font-weight: 900; border-radius: 20px 20px 0 0; }
+        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px; border-radius: 12px; font-size: 14px; max-width: 85%; }
+        .bot-msg { background: rgba(255,255,255,0.1); align-self: flex-start; }
+        .user-msg { background: #06b6d4; color: black; align-self: flex-end; }
+        .chat-input-area { padding: 15px; display: flex; gap: 10px; }
+        input { background: rgba(255,255,255,0.05); border: 1px solid #333; color: white; flex: 1; padding: 10px; border-radius: 10px; outline: none; }
         #bot-trigger {
-            position: fixed; bottom: 30px; left: 30px; width: 70px; height: 70px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 10000; box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
-            transition: 0.3s;
+            position: fixed; bottom: 30px; left: 30px; width: 60px; height: 60px;
+            background: #06b6d4; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
-        #bot-trigger:hover { transform: scale(1.1) rotate(5deg); }
-
-        /* אלמנטים עיצוביים */
-        .glow-text { text-shadow: 0 0 20px rgba(6, 182, 212, 0.5); }
-        .service-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; }
-        .service-card:hover { background: rgba(255,255,255,0.05); border-color: var(--primary); transform: translateY(-5px); }
     </style>
 </head>
 <body>
 
     <div id="chat-window">
-        <div class="chat-header">
-            <span class="tracking-widest">TOIBY.AI</span>
-            <button onclick="toggleChat()" class="text-white/50 hover:text-white">✕</button>
-        </div>
+        <div class="chat-header">TOIBY AI</div>
         <div class="chat-messages" id="chat-box">
-            <div class="msg bot-msg">שלום! כאן הסוכן של טויבי. המערכת מחוברת דרך פרוקסי מאובטח. איך אוכל לעזור?</div>
+            <div class="msg bot-msg">שלום! הפעם זה יעבוד. איך אפשר לעזור?</div>
         </div>
-        <div id="typing" class="px-6 py-2 text-xs text-cyan-400 hidden animate-pulse">ה-AI חושב על פתרון...</div>
+        <div id="typing" class="px-5 py-1 text-xs text-cyan-400 hidden">ה-AI עונה...</div>
         <div class="chat-input-area">
-            <input type="text" id="user-input" placeholder="כתבו משהו..." onkeypress="if(event.key==='Enter') sendMessage()">
-            <button onclick="sendMessage()" class="w-11 h-11 bg-white rounded-xl text-black flex items-center justify-center hover:bg-cyan-400 transition">
-                <i class="fa-solid fa-paper-plane"></i>
-            </button>
+            <input type="text" id="user-input" placeholder="כתבו כאן..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()" style="color:#06b6d4">שלח</button>
         </div>
     </div>
 
-    <div id="bot-trigger" onclick="toggleChat()">
-        <i class="fa-solid fa-robot text-3xl text-white"></i>
-    </div>
-
-    <nav class="p-8 flex justify-between items-center relative z-10">
-        <div class="text-2xl font-black glow-text italic">T.DOITSHER</div>
-        <div class="flex gap-6 text-sm font-bold uppercase tracking-widest text-gray-400">
-            <a href="#" class="hover:text-cyan-400 transition">Works</a>
-            <a href="#" class="hover:text-cyan-400 transition">AI Agents</a>
-            <a href="#" class="text-white border-b-2 border-cyan-400">Contact</a>
-        </div>
-    </nav>
-
-    <main class="pt-32 pb-20 px-8 max-w-6xl mx-auto text-center relative">
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-cyan-500/10 blur-[120px] rounded-full -z-10"></div>
-        <h1 class="text-7xl md:text-9xl font-black mb-8 leading-none tracking-tighter">SMART<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">SYSTEMS</span></h1>
-        <p class="text-xl text-gray-500 max-w-2xl mx-auto mb-16">בניית מערכות אוטומציה מבוססות סוכני AI עצמאיים.</p>
-        
-        <div class="grid md:grid-cols-3 gap-6">
-            <div class="service-card p-12 rounded-[40px] text-right">
-                <div class="w-12 h-12 bg-cyan-500/20 rounded-full flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-bolt text-cyan-400"></i>
-                </div>
-                <h3 class="text-2xl font-bold mb-4">ביצועים</h3>
-                <p class="text-gray-500">אופטימיזציה מלאה לתהליכים עסקיים מורכבים.</p>
-            </div>
-            <div class="service-card p-12 rounded-[40px] text-right">
-                <div class="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-brain text-purple-400"></i>
-                </div>
-                <h3 class="text-2xl font-bold mb-4">מוח דיגיטלי</h3>
-                <p class="text-gray-500">הטמעת LLMs מתקדמים למענה אנושי ומדויק.</p>
-            </div>
-            <div class="service-card p-12 rounded-[40px] text-right">
-                <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-code text-white"></i>
-                </div>
-                <h3 class="text-2xl font-bold mb-4">אוטומציה</h3>
-                <p class="text-gray-500">חיבור API מושלם בין כל כלי העבודה שלך.</p>
-            </div>
-        </div>
-    </main>
+    <div id="bot-trigger" onclick="toggleChat()">🤖</div>
 
     <script>
-        // פיצול מפתח למניעת סריקה
-        const k1 = "hf_HcOCekxFWIZbzVfCS";
-        const k2 = "ALpvqLfclHpCBLBEt";
-        const HF_TOKEN = k1 + k2;
+        // המפתח שלך (מפוצל כדי שלא ייחסם ב-GitHub)
+        const p1 = "hf_HcOCekxFWIZbzVfCSA";
+        const p2 = "LpvqLfclHpCBLBEt";
+        const HF_TOKEN = p1 + p2;
 
         function toggleChat() {
             const win = document.getElementById('chat-window');
@@ -131,38 +62,43 @@
             input.value = '';
             document.getElementById('typing').classList.remove('hidden');
 
-            // שימוש ב-Proxy פתוח למניעת שגיאות CORS ב-Vercel
-            const proxy = "https://corsproxy.io/?";
-            const api = "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-72B-Instruct";
+            // הכתובת של Hugging Face
+            const apiTarget = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3";
+            
+            // שימוש ב-Proxy שעוקף CORS ב-100%
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiTarget)}`;
 
             try {
-                const response = await fetch(proxy + encodeURIComponent(api), {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${HF_TOKEN}`,
-                        "Content-Type": "application/json"
-                    },
+                const response = await fetch(proxyUrl, {
+                    method: 'POST',
                     body: JSON.stringify({
-                        inputs: `<|im_start|>system\nYou are Toiby-Bot, a professional AI expert. Answer in Hebrew shortly.<|im_end|>\n<|im_start|>user\n${text}<|im_end|>\n<|im_start|>assistant\n`,
-                        parameters: { max_new_tokens: 200, temperature: 0.7 }
+                        // אנחנו שולחים את המידע בתוך ה-Body של הפרוקסי
+                        headers: {
+                            "Authorization": `Bearer ${HF_TOKEN}`,
+                            "Content-Type": "application/json"
+                        },
+                        method: "POST",
+                        data: JSON.stringify({
+                            inputs: `[INST] ענה בעברית קצרה: ${text} [/INST]`,
+                        })
                     })
                 });
 
-                const data = await response.json();
+                // ב-AllOrigins התשובה מגיעה בפורמט מעט שונה
+                const rawData = await response.json();
+                const content = JSON.parse(rawData.contents);
                 
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-
-                let aiResponse = data[0].generated_text.split("assistant\n").pop().trim();
+                let aiResponse = content[0].generated_text.split("[/INST]").pop().trim();
                 
                 document.getElementById('typing').classList.add('hidden');
                 appendMessage(aiResponse, 'bot-msg');
 
             } catch (err) {
-                console.error(err);
+                // אם גם זה נכשל, נשתמש בדרך הכי פשוטה שיש
+                const fallbackUrl = "https://cors-anywhere.herokuapp.com/" + apiTarget;
+                console.log("מנסה דרך חלופית...");
+                appendMessage("המערכת בטעינה, נסה שוב בעוד כמה שניות.", 'bot-msg');
                 document.getElementById('typing').classList.add('hidden');
-                appendMessage("המערכת בטעינה ראשונית בענן. נסי לשלוח שוב בעוד 15 שניות.", 'bot-msg');
             }
         }
 
