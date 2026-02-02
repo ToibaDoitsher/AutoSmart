@@ -1,40 +1,23 @@
 export default async function handler(req, res) {
-    if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
-
     const { text } = req.body;
     const HF_TOKEN = process.env.HF_TOKEN;
 
     try {
-        const url = "https://router.huggingface.co/hf-inference/v1/chat/completions";
-
-        const response = await fetch(url, {
+        // המודל הזה הוא הכי קבוע והכי יציב ב-Hugging Face
+        const response = await fetch("https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill", {
             method: "POST",
-            headers: {
-                "Authorization": `Bearer ${HF_TOKEN}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                // שימוש במודל Microsoft - הוא הכי יציב בראוטר החינמי
-                model: "microsoft/Phi-3-mini-4k-instruct",
-                messages: [
-                    { role: "user", content: text }
-                ],
-                max_tokens: 500
-            })
+            headers: { "Authorization": `Bearer ${HF_TOKEN}` },
+            body: JSON.stringify({ inputs: text })
         });
 
-        const responseText = await response.text();
+        const data = await response.json();
         
-        if (!response.ok) {
-            return res.status(response.status).json({ 
-                error: `שגיאה מהשרת: ${responseText}` 
-            });
-        }
+        if (!response.ok) return res.status(500).json({ error: "טעות בטוקן או בשרת" });
 
-        const data = JSON.parse(responseText);
-        return res.status(200).json({ reply: data.choices[0].message.content.trim() });
+        const reply = data.generated_text || data[0]?.generated_text || "ה-AI ענה אבל התשובה ריקה";
+        return res.status(200).json({ reply });
 
     } catch (e) {
-        return res.status(500).json({ error: 'קריסה: ' + e.message });
+        return res.status(500).json({ error: "תקלה: " + e.message });
     }
 }
