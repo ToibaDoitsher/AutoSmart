@@ -5,12 +5,12 @@ export default async function handler(req, res) {
     const HF_TOKEN = process.env.HF_TOKEN;
 
     if (!HF_TOKEN) {
-        return res.status(500).json({ error: 'Missing HF_TOKEN' });
+        return res.status(500).json({ error: 'חסר HF_TOKEN ב-Vercel' });
     }
 
     try {
-        // הכתובת החדשה והנתמכת
-        const url = "https://router.huggingface.co/hf-inference/v1/chat/completions";
+        // הכתובת המדויקת לראוטר החדש
+        const url = "https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.2-3B-Instruct/v1/chat/completions";
 
         const response = await fetch(url, {
             method: "POST",
@@ -19,28 +19,27 @@ export default async function handler(req, res) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "meta-llama/Llama-3.2-3B-Instruct", // שם המודל
                 messages: [
-                    { role: "system", content: "ענה בעברית בלבד בצורה ברורה." },
-                    { role: "user", content: text }
+                    { role: "user", content: "ענה בעברית: " + text }
                 ],
                 max_tokens: 500,
                 stream: false
             })
         });
 
-        const data = await response.json();
-
+        // בדיקה אם התקבלה תשובה תקינה לפני שמנסים להפוך ל-JSON
+        const responseText = await response.text();
+        
         if (!response.ok) {
-            return res.status(response.status).json({ error: data.error || "Hugging Face Router Error" });
+            return res.status(response.status).json({ error: `שגיאת שרת: ${responseText}` });
         }
 
-        // חילוץ התשובה מהפורמט החדש (choices[0].message.content)
+        const data = JSON.parse(responseText);
         const reply = data.choices[0].message.content;
         
         return res.status(200).json({ reply: reply.trim() });
 
     } catch (e) {
-        return res.status(500).json({ error: 'Server Error: ' + e.message });
+        return res.status(500).json({ error: 'קריסה בקוד: ' + e.message });
     }
 }
