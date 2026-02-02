@@ -4,49 +4,37 @@ export default async function handler(req, res) {
     const { text } = req.body;
     const HF_TOKEN = process.env.HF_TOKEN; 
 
-    try {
-        // הכתובת החדשה והמעודכנת של Hugging Face
-        const url = "https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.2-3B-Instruct";
+    // בדיקה אם המפתח קיים בכלל ב-Vercel
+    if (!HF_TOKEN) {
+        return res.status(500).json({ error: "Missing HF_TOKEN in Vercel environment variables" });
+    }
 
-        const response = await fetch(url, {
+    try {
+        // כתובת ה-API הרשמית והיצירה ביותר
+        const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${HF_TOKEN}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                inputs: `<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\nענה בעברית: ${text}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n`,
-                parameters: { 
-                    max_new_tokens: 300,
-                    temperature: 0.7,
-                    top_p: 0.9
-                },
-                options: {
-                    wait_for_model: true
-                }
+                inputs: text,
+                parameters: { max_new_tokens: 200 },
+                options: { wait_for_model: true }
             })
         });
 
         const data = await response.json();
 
-        // בדיקה אם ה-API החזיר תשובה בפורמט החדש
-        let result = "";
-        
-        if (Array.isArray(data) && data[0].generated_text) {
-            result = data[0].generated_text.trim();
-        } else if (data.choices && data.choices[0].message) {
-            // תמיכה בפורמט ה-Chat החדש (דומה ל-OpenAI) שחלק מהראוטרים מחזירים
-            result = data.choices[0].message.content;
-        } else if (data.error) {
-            result = "שגיאת Hugging Face: " + data.error;
-        } else {
-            result = "המערכת לא זיהתה את פורמט התשובה. נסי שוב.";
+        // אם Hugging Face מחזירים שגיאה (כמו 401 או 404)
+        if (!response.ok) {
+            return res.status(response.status).json({ error: data.error || "Hugging Face Error" });
         }
 
-        res.status(200).json({ reply: result });
+        let result = Array.isArray(data) ? data[0].generated_text : data.generated_text;
+        res.status(200).json({ reply: result || "לא התקבלה תשובה מהמודל" });
 
     } catch (e) {
-        console.error("Server Error:", e);
-        res.status(500).json({ error: "שגיאה בחיבור לשרת: " + e.message });
+        res.status(500).json({ error: "Server Crash: " + e.message });
     }
 }
