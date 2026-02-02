@@ -3,112 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T.Doitsher | AI Agent</title>
+    <title>Toiby AI | Professional Agent</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Heebo', sans-serif; background: #05070f; color: white; margin: 0; }
-        #chat-window {
-            position: fixed; bottom: 100px; left: 30px; width: 340px; height: 480px;
-            background: rgba(10, 15, 30, 0.95); backdrop-filter: blur(15px);
-            border: 1px solid #06b6d4; border-radius: 20px; display: none; flex-direction: column; z-index: 9999;
-        }
-        .chat-header { background: #06b6d4; color: black; padding: 12px; font-weight: 900; border-radius: 20px 20px 0 0; }
-        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 10px; border-radius: 12px; font-size: 14px; max-width: 85%; }
-        .bot-msg { background: rgba(255,255,255,0.1); align-self: flex-start; }
-        .user-msg { background: #06b6d4; color: black; align-self: flex-end; }
-        .chat-input-area { padding: 15px; display: flex; gap: 10px; }
-        input { background: rgba(255,255,255,0.05); border: 1px solid #333; color: white; flex: 1; padding: 10px; border-radius: 10px; outline: none; }
-        #bot-trigger {
-            position: fixed; bottom: 30px; left: 30px; width: 60px; height: 60px;
-            background: #06b6d4; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;
-        }
+        body { background: #030712; color: white; font-family: system-ui; }
+        .chat-box { height: 400px; overflow-y: auto; border: 1px solid #1e293b; background: #0f172a; padding: 20px; border-radius: 15px; }
+        .msg { margin-bottom: 15px; padding: 10px 15px; border-radius: 10px; max-width: 80%; }
+        .user { background: #06b6d4; color: black; align-self: flex-end; margin-right: auto; }
+        .bot { background: #1e293b; align-self: flex-start; }
     </style>
 </head>
-<body>
-
-    <div id="chat-window">
-        <div class="chat-header">TOIBY AI</div>
-        <div class="chat-messages" id="chat-box">
-            <div class="msg bot-msg">שלום! הפעם זה יעבוד. איך אפשר לעזור?</div>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+    <h1 class="text-3xl font-black mb-6 text-cyan-400">TOIBY AI SYSTEM</h1>
+    
+    <div class="w-full max-w-md">
+        <div id="chat" class="chat-box flex flex-col mb-4">
+            <div class="msg bot">היי טויבי! המערכת עברה לשרת (Backend). עכשיו זה יעבוד ב-100%. מה נבדוק?</div>
         </div>
-        <div id="typing" class="px-5 py-1 text-xs text-cyan-400 hidden">ה-AI עונה...</div>
-        <div class="chat-input-area">
-            <input type="text" id="user-input" placeholder="כתבו כאן..." onkeypress="if(event.key==='Enter') sendMessage()">
-            <button onclick="sendMessage()" style="color:#06b6d4">שלח</button>
+        
+        <div class="flex gap-2">
+            <input id="input" type="text" class="flex-1 bg-gray-900 border border-gray-700 p-3 rounded-lg outline-none focus:border-cyan-400" placeholder="שלחי הודעה...">
+            <button onclick="send()" class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-6 rounded-lg transition">שלח</button>
         </div>
+        <p id="status" class="text-xs text-gray-500 mt-2 text-center"></p>
     </div>
 
-    <div id="bot-trigger" onclick="toggleChat()">🤖</div>
-
     <script>
-        // המפתח שלך (מפוצל כדי שלא ייחסם ב-GitHub)
-        const p1 = "hf_HcOCekxFWIZbzVfCSA";
-        const p2 = "LpvqLfclHpCBLBEt";
-        const HF_TOKEN = p1 + p2;
-
-        function toggleChat() {
-            const win = document.getElementById('chat-window');
-            win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById('user-input');
+        async function send() {
+            const input = document.getElementById('input');
+            const chat = document.getElementById('chat');
+            const status = document.getElementById('status');
             const text = input.value.trim();
             if (!text) return;
 
-            appendMessage(text, 'user-msg');
+            chat.innerHTML += `<div class="msg user">${text}</div>`;
             input.value = '';
-            document.getElementById('typing').classList.remove('hidden');
-
-            // הכתובת של Hugging Face
-            const apiTarget = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3";
-            
-            // שימוש ב-Proxy שעוקף CORS ב-100%
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiTarget)}`;
+            status.innerText = "השרת מעבד את הבקשה...";
 
             try {
-                const response = await fetch(proxyUrl, {
+                const res = await fetch('/api/chat', {
                     method: 'POST',
-                    body: JSON.stringify({
-                        // אנחנו שולחים את המידע בתוך ה-Body של הפרוקסי
-                        headers: {
-                            "Authorization": `Bearer ${HF_TOKEN}`,
-                            "Content-Type": "application/json"
-                        },
-                        method: "POST",
-                        data: JSON.stringify({
-                            inputs: `[INST] ענה בעברית קצרה: ${text} [/INST]`,
-                        })
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
                 });
-
-                // ב-AllOrigins התשובה מגיעה בפורמט מעט שונה
-                const rawData = await response.json();
-                const content = JSON.parse(rawData.contents);
                 
-                let aiResponse = content[0].generated_text.split("[/INST]").pop().trim();
+                const data = await res.json();
+                // השרת שלנו מחזיר את התשובה נקייה
+                const reply = data.reply || "לא התקבלה תשובה";
                 
-                document.getElementById('typing').classList.add('hidden');
-                appendMessage(aiResponse, 'bot-msg');
-
-            } catch (err) {
-                // אם גם זה נכשל, נשתמש בדרך הכי פשוטה שיש
-                const fallbackUrl = "https://cors-anywhere.herokuapp.com/" + apiTarget;
-                console.log("מנסה דרך חלופית...");
-                appendMessage("המערכת בטעינה, נסה שוב בעוד כמה שניות.", 'bot-msg');
-                document.getElementById('typing').classList.add('hidden');
+                chat.innerHTML += `<div class="msg bot">${reply}</div>`;
+                status.innerText = "";
+            } catch (e) {
+                chat.innerHTML += `<div class="msg bot text-red-400">שגיאה בחיבור לשרת. וודאי שהעלית את תיקיית api.</div>`;
+                status.innerText = "";
             }
-        }
-
-        function appendMessage(text, className) {
-            const box = document.getElementById('chat-box');
-            const div = document.createElement('div');
-            div.className = `msg ${className}`;
-            div.innerText = text;
-            box.appendChild(div);
-            box.scrollTop = box.scrollHeight;
+            chat.scrollTop = chat.scrollHeight;
         }
     </script>
 </body>
