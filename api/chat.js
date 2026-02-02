@@ -4,42 +4,36 @@ export default async function handler(req, res) {
     const { text } = req.body;
     const HF_TOKEN = process.env.HF_TOKEN;
 
-    if (!HF_TOKEN) {
-        return res.status(500).json({ error: 'Missing HF_TOKEN in Vercel settings' });
-    }
-
     try {
-        // הכתובת המדויקת ביותר לראוטר החדש
-        const url = "https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.2-3B-Instruct/v1/chat/completions";
-
-        const response = await fetch(url, {
+        // שימוש בכתובת ה-API הישירה (Legacy Inference) - הכי אמינה כרגע
+        const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${HF_TOKEN}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "meta-llama/Llama-3.2-3B-Instruct",
-                messages: [
-                    { role: "user", content: "ענה בעברית: " + text }
-                ],
-                max_tokens: 500
+                inputs: `<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\nענה בעברית: ${text}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n`,
+                parameters: { max_new_tokens: 250 },
+                options: { wait_for_model: true }
             })
         });
 
-        // קודם מקבלים את הטקסט הגולמי כדי לבדוק מה חזר
-        const responseText = await response.text();
-        
+        const data = await response.json();
+
         if (!response.ok) {
-            return res.status(response.status).json({ error: `Hugging Face Error: ${responseText}` });
+            return res.status(response.status).json({ error: data.error || "Hugging Face Error" });
         }
 
-        const data = JSON.parse(responseText);
-        const reply = data.choices[0].message.content;
+        // חילוץ טקסט בפורמט הישיר
+        const reply = Array.isArray(data) ? data[0].generated_text : data.generated_text;
         
-        return res.status(200).json({ reply: reply.trim() });
+        // ניקוי התשובה כדי להציג רק את מה שהבוט ענה
+        const cleanReply = reply.split("<|start_header_id|>assistant<|end_header_id|>").pop().trim();
+
+        return res.status(200).json({ reply: cleanReply });
 
     } catch (e) {
-        return res.status(500).json({ error: 'Server Crash: ' + e.message });
+        return res.status(500).json({ error: 'Server Error: ' + e.message });
     }
 }
