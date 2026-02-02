@@ -4,8 +4,10 @@ export default async function handler(req, res) {
     const { text } = req.body;
     const HF_TOKEN = process.env.HF_TOKEN;
 
+    if (!HF_TOKEN) return res.status(500).json({ error: 'חסר טוקן בשרת' });
+
     try {
-        // הכתובת היחידה שורסל והאגינג פייס יסכימו עליה עכשיו
+        // הכתובת הזו היא הכי יציבה בראוטר החדש
         const url = "https://router.huggingface.co/hf-inference/v1/chat/completions";
 
         const response = await fetch(url, {
@@ -15,28 +17,26 @@ export default async function handler(req, res) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "meta-llama/Llama-3.2-3B-Instruct",
+                model: "mistralai/Mistral-7B-Instruct-v0.3",
                 messages: [
-                    { role: "system", content: "ענה בעברית בלבד." },
+                    { role: "system", content: "ענה בעברית קצרה." },
                     { role: "user", content: text }
                 ],
-                max_tokens: 500,
-                stream: false
+                max_tokens: 500
             })
         });
 
-        const responseText = await response.text();
-        
+        const data = await response.json();
+
         if (!response.ok) {
-            return res.status(response.status).json({ error: `Hugging Face Error: ${responseText}` });
+            // אם עדיין יש שגיאה, נציג אותה בצורה ברורה
+            const errorMsg = data.error?.message || data.error || "Model Not Found";
+            return res.status(response.status).json({ error: errorMsg });
         }
 
-        const data = JSON.parse(responseText);
-        const reply = data.choices[0].message.content;
-        
-        return res.status(200).json({ reply: reply.trim() });
+        return res.status(200).json({ reply: data.choices[0].message.content.trim() });
 
     } catch (e) {
-        return res.status(500).json({ error: 'Server Crash: ' + e.message });
+        return res.status(500).json({ error: 'קריסת שרת: ' + e.message });
     }
 }
