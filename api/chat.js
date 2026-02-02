@@ -4,9 +4,11 @@ export default async function handler(req, res) {
     const { text } = req.body;
     const HF_TOKEN = process.env.HF_TOKEN;
 
+    if (!HF_TOKEN) return res.status(500).json({ error: 'Missing Token' });
+
     try {
-        // הכתובת הרשמית והיחידה שנתמכת עכשיו
-        const url = "https://router.huggingface.co/hf-inference/v1/chat/completions";
+        // כתובת ישירה למודל ללא v1 או router - זו הכתובת הכי אמינה כרגע
+        const url = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3";
 
         const response = await fetch(url, {
             method: "POST",
@@ -15,24 +17,25 @@ export default async function handler(req, res) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "mistralai/Mistral-7B-Instruct-v0.3", // מודל יציב יותר בראוטר
-                messages: [
-                    { role: "system", content: "ענה בעברית בלבד." },
-                    { role: "user", content: text }
-                ],
-                max_tokens: 500
+                inputs: `<s>[INST] ענה בעברית: ${text} [/INST]`,
+                parameters: { max_new_tokens: 500 },
+                options: { wait_for_model: true }
             })
         });
 
-        const responseText = await response.text();
-        
+        const data = await response.json();
+
         if (!response.ok) {
-            // אם עדיין יש שגיאה, נראה בדיוק מה Hugging Face אומרים
-            return res.status(response.status).json({ error: `HF Error: ${responseText}` });
+            return res.status(response.status).json({ error: data.error || "Model Error" });
         }
 
-        const data = JSON.parse(responseText);
-        return res.status(200).json({ reply: data.choices[0].message.content.trim() });
+        // במודל Mistral בכתובת הזו, התשובה חוזרת בפורמט הזה:
+        const reply = Array.isArray(data) ? data[0].generated_text : data.generated_text;
+        
+        // ניקוי הפלט מההוראות של המערכת
+        const cleanReply = reply.split('[/INST]').pop().trim();
+
+        return res.status(200).json({ reply: cleanReply });
 
     } catch (e) {
         return res.status(500).json({ error: 'Server Crash: ' + e.message });
