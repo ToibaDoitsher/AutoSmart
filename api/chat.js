@@ -5,8 +5,10 @@ export default async function handler(req, res) {
     const HF_TOKEN = process.env.HF_TOKEN; 
 
     try {
-        // שימוש במודל Llama-3.2-3B - מהיר מאוד ותומך בעברית מצוין
-        const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct", {
+        // הכתובת החדשה והמעודכנת של Hugging Face
+        const url = "https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.2-3B-Instruct";
+
+        const response = await fetch(url, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${HF_TOKEN}`,
@@ -15,32 +17,36 @@ export default async function handler(req, res) {
             body: JSON.stringify({
                 inputs: `<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\nענה בעברית: ${text}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n`,
                 parameters: { 
-                    max_new_tokens: 250,
-                    return_full_text: false,
-                    temperature: 0.7
+                    max_new_tokens: 300,
+                    temperature: 0.7,
+                    top_p: 0.9
                 },
                 options: {
-                    wait_for_model: true // גורם ל-API להמתין עד שהמודל יטען במקום להחזיר שגיאה
+                    wait_for_model: true
                 }
             })
         });
 
         const data = await response.json();
 
-        // בדיקה אם חזרה תשובה תקינה
+        // בדיקה אם ה-API החזיר תשובה בפורמט החדש
         let result = "";
+        
         if (Array.isArray(data) && data[0].generated_text) {
             result = data[0].generated_text.trim();
+        } else if (data.choices && data.choices[0].message) {
+            // תמיכה בפורמט ה-Chat החדש (דומה ל-OpenAI) שחלק מהראוטרים מחזירים
+            result = data.choices[0].message.content;
         } else if (data.error) {
-            result = "שגיאת מערכת: " + data.error;
+            result = "שגיאת Hugging Face: " + data.error;
         } else {
-            result = "המערכת לא החזירה תשובה, נסי שוב בעוד רגע.";
+            result = "המערכת לא זיהתה את פורמט התשובה. נסי שוב.";
         }
 
         res.status(200).json({ reply: result });
 
     } catch (e) {
         console.error("Server Error:", e);
-        res.status(500).json({ error: "חלה שגיאה בשרת: " + e.message });
+        res.status(500).json({ error: "שגיאה בחיבור לשרת: " + e.message });
     }
 }
