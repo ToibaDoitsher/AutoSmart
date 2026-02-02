@@ -5,12 +5,12 @@ export default async function handler(req, res) {
     const HF_TOKEN = process.env.HF_TOKEN;
 
     if (!HF_TOKEN) {
-        return res.status(500).json({ error: 'חסר מפתח HF_TOKEN ב-Vercel' });
+        return res.status(500).json({ error: 'Missing HF_TOKEN in Vercel settings' });
     }
 
     try {
-        // הכתובת החדשה והמעודכנת - שימי לב לסיומת /v1/chat/completions
-        const url = "https://router.huggingface.co/hf-inference/v1/chat/completions";
+        // הכתובת המדויקת ביותר לראוטר החדש
+        const url = "https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.2-3B-Instruct/v1/chat/completions";
 
         const response = await fetch(url, {
             method: "POST",
@@ -21,26 +21,25 @@ export default async function handler(req, res) {
             body: JSON.stringify({
                 model: "meta-llama/Llama-3.2-3B-Instruct",
                 messages: [
-                    { role: "system", content: "ענה בעברית קצרה וקולעת." },
-                    { role: "user", content: text }
+                    { role: "user", content: "ענה בעברית: " + text }
                 ],
-                max_tokens: 500,
-                stream: false
+                max_tokens: 500
             })
         });
 
-        const data = await response.json();
-
+        // קודם מקבלים את הטקסט הגולמי כדי לבדוק מה חזר
+        const responseText = await response.text();
+        
         if (!response.ok) {
-            return res.status(response.status).json({ error: data.error || "שגיאה מהראוטר החדש" });
+            return res.status(response.status).json({ error: `Hugging Face Error: ${responseText}` });
         }
 
-        // חילוץ התשובה מהפורמט החדש
+        const data = JSON.parse(responseText);
         const reply = data.choices[0].message.content;
         
         return res.status(200).json({ reply: reply.trim() });
 
     } catch (e) {
-        return res.status(500).json({ error: 'שגיאת שרת: ' + e.message });
+        return res.status(500).json({ error: 'Server Crash: ' + e.message });
     }
 }
