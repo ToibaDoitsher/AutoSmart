@@ -4,42 +4,32 @@ export default async function handler(req, res) {
     const { text } = req.body;
     const HF_TOKEN = process.env.HF_TOKEN;
 
-    if (!HF_TOKEN) {
-        return res.status(500).json({ error: 'חסר HF_TOKEN ב-Vercel' });
-    }
-
     try {
-        // הכתובת המדויקת לראוטר החדש
-        const url = "https://router.huggingface.co/hf-inference/models/meta-llama/Llama-3.2-3B-Instruct/v1/chat/completions";
-
-        const response = await fetch(url, {
+        // כתובת ישירה ומדויקת למודל (ללא הראוטר הבעייתי)
+        const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${HF_TOKEN}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                messages: [
-                    { role: "user", content: "ענה בעברית: " + text }
-                ],
-                max_tokens: 500,
-                stream: false
+                inputs: text,
+                parameters: { max_new_tokens: 200 },
+                options: { wait_for_model: true }
             })
         });
 
-        // בדיקה אם התקבלה תשובה תקינה לפני שמנסים להפוך ל-JSON
-        const responseText = await response.text();
-        
+        const data = await response.json();
+
         if (!response.ok) {
-            return res.status(response.status).json({ error: `שגיאת שרת: ${responseText}` });
+            // זה ידפיס לנו בדיוק מה Hugging Face אומרים
+            return res.status(response.status).json({ error: data.error || "Hugging Face Error" });
         }
 
-        const data = JSON.parse(responseText);
-        const reply = data.choices[0].message.content;
-        
-        return res.status(200).json({ reply: reply.trim() });
+        const reply = Array.isArray(data) ? data[0].generated_text : data.generated_text;
+        res.status(200).json({ reply: reply || "לא התקבלה תשובה" });
 
     } catch (e) {
-        return res.status(500).json({ error: 'קריסה בקוד: ' + e.message });
+        res.status(500).json({ error: "Server Crash: " + e.message });
     }
 }
