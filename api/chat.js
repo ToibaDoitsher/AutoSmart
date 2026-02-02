@@ -5,7 +5,6 @@ export default async function handler(req, res) {
     const HF_TOKEN = process.env.HF_TOKEN;
 
     try {
-        // זו הכתובת היחידה שנתמכת ב-2026
         const url = "https://router.huggingface.co/hf-inference/v1/chat/completions";
 
         const response = await fetch(url, {
@@ -15,7 +14,8 @@ export default async function handler(req, res) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "mistralai/Mistral-7B-Instruct-v0.3",
+                // שימוש במודל Microsoft - הוא הכי יציב בראוטר החינמי
+                model: "microsoft/Phi-3-mini-4k-instruct",
                 messages: [
                     { role: "user", content: text }
                 ],
@@ -26,13 +26,15 @@ export default async function handler(req, res) {
         const responseText = await response.text();
         
         if (!response.ok) {
-            return res.status(response.status).json({ error: `Hugging Face Error: ${responseText}` });
+            return res.status(response.status).json({ 
+                error: `שגיאה מהשרת: ${responseText}` 
+            });
         }
 
         const data = JSON.parse(responseText);
         return res.status(200).json({ reply: data.choices[0].message.content.trim() });
 
     } catch (e) {
-        return res.status(500).json({ error: 'קריסת שרת: ' + e.message });
+        return res.status(500).json({ error: 'קריסה: ' + e.message });
     }
 }
