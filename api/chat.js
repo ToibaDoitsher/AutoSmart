@@ -4,11 +4,9 @@ export default async function handler(req, res) {
     const { text } = req.body;
     const HF_TOKEN = process.env.HF_TOKEN;
 
-    if (!HF_TOKEN) return res.status(500).json({ error: 'Missing Token' });
-
     try {
-        // כתובת ישירה למודל ללא v1 או router - זו הכתובת הכי אמינה כרגע
-        const url = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3";
+        // הכתובת היחידה שורסל והאגינג פייס יסכימו עליה עכשיו
+        const url = "https://router.huggingface.co/hf-inference/v1/chat/completions";
 
         const response = await fetch(url, {
             method: "POST",
@@ -17,25 +15,26 @@ export default async function handler(req, res) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                inputs: `<s>[INST] ענה בעברית: ${text} [/INST]`,
-                parameters: { max_new_tokens: 500 },
-                options: { wait_for_model: true }
+                model: "meta-llama/Llama-3.2-3B-Instruct",
+                messages: [
+                    { role: "system", content: "ענה בעברית בלבד." },
+                    { role: "user", content: text }
+                ],
+                max_tokens: 500,
+                stream: false
             })
         });
 
-        const data = await response.json();
-
+        const responseText = await response.text();
+        
         if (!response.ok) {
-            return res.status(response.status).json({ error: data.error || "Model Error" });
+            return res.status(response.status).json({ error: `Hugging Face Error: ${responseText}` });
         }
 
-        // במודל Mistral בכתובת הזו, התשובה חוזרת בפורמט הזה:
-        const reply = Array.isArray(data) ? data[0].generated_text : data.generated_text;
+        const data = JSON.parse(responseText);
+        const reply = data.choices[0].message.content;
         
-        // ניקוי הפלט מההוראות של המערכת
-        const cleanReply = reply.split('[/INST]').pop().trim();
-
-        return res.status(200).json({ reply: cleanReply });
+        return res.status(200).json({ reply: reply.trim() });
 
     } catch (e) {
         return res.status(500).json({ error: 'Server Crash: ' + e.message });
