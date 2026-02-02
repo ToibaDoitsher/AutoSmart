@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     const HF_TOKEN = process.env.HF_TOKEN;
 
     try {
-        // הכתובת החדשה והיחידה שפועלת ב-2026
+        // שימוש בראוטר החדש בלבד - הכתובת היחידה שפועלת
         const url = "https://router.huggingface.co/hf-inference/v1/chat/completions";
 
         const response = await fetch(url, {
@@ -17,24 +17,27 @@ export default async function handler(req, res) {
             body: JSON.stringify({
                 model: "mistralai/Mistral-7B-Instruct-v0.3",
                 messages: [
-                    { role: "system", content: "ענה בעברית קצרה." },
                     { role: "user", content: text }
                 ],
                 max_tokens: 500
             })
         });
 
-        // שיפור: קוראים את התשובה קודם כטקסט כדי למנוע קריסת JSON
+        // קריאת התשובה קודם כל כטקסט פשוט כדי למנוע את קריסת ה-JSON
         const responseText = await response.text();
-        
+
         if (!response.ok) {
-            return res.status(response.status).json({ error: `Hugging Face Error: ${responseText}` });
+            return res.status(response.status).json({ 
+                error: `שגיאת שרת AI: ${responseText}` 
+            });
         }
 
         const data = JSON.parse(responseText);
-        return res.status(200).json({ reply: data.choices[0].message.content.trim() });
+        const reply = data.choices[0].message.content;
+        
+        return res.status(200).json({ reply: reply.trim() });
 
     } catch (e) {
-        return res.status(500).json({ error: 'Server Crash: ' + e.message });
+        return res.status(500).json({ error: 'קריסת שרת: ' + e.message });
     }
 }
