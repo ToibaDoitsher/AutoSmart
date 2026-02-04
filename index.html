@@ -3,78 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toiby AI | Live System</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Toiba | AI & Automation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        body { background: #05070f; color: white; font-family: system-ui, -apple-system, sans-serif; }
-        .chat-box { height: 60vh; overflow-y: auto; scroll-behavior: smooth; }
-        .msg { margin: 8px 0; padding: 12px 16px; border-radius: 18px; max-width: 85%; line-height: 1.5; }
-        .user { background: #06b6d4; color: #000; align-self: flex-end; margin-right: auto; }
-        .bot { background: #1e293b; color: #e2e8f0; align-self: flex-start; }
+        :root { --primary: #6366f1; --dark: #0f172a; --glass: rgba(255, 255, 255, 0.1); }
+        body { margin: 0; background: var(--dark); color: white; font-family: 'Assistant', sans-serif; overflow-x: hidden; }
+        
+        /* רקע ועיצוב */
+        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        h1 { font-size: 3.5rem; margin-bottom: 10px; background: linear-gradient(90deg, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* כפתור הבועה של הצ'אט */
+        #chat-widget-button {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 60px; height: 60px; border-radius: 50%;
+            background: var(--primary); color: white;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 1000; transition: transform 0.3s;
+        }
+        #chat-widget-button:hover { transform: scale(1.1); }
+
+        /* חלון הצ'אט */
+        #chat-window {
+            position: fixed; bottom: 90px; right: 20px;
+            width: 350px; height: 450px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass);
+            border-radius: 20px;
+            display: none; flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 1000; overflow: hidden;
+        }
+
+        #chat-header { background: var(--primary); padding: 15px; text-align: center; font-weight: bold; }
+        #chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        
+        .msg { max-width: 80%; padding: 10px; border-radius: 12px; font-size: 0.9rem; }
+        .user-msg { align-self: flex-start; background: var(--glass); }
+        .bot-msg { align-self: flex-end; background: var(--primary); }
+
+        #chat-input-area { display: flex; padding: 10px; border-top: 1px solid var(--glass); }
+        #chat-input { flex: 1; background: transparent; border: none; color: white; outline: none; }
+        #send-btn { cursor: pointer; color: var(--primary); font-weight: bold; }
+
+        /* כרטיסי פרויקטים */
+        .projects { display: flex; justify-content: center; gap: 20px; padding: 20px; }
+        .card { background: var(--glass); padding: 20px; border-radius: 15px; text-decoration: none; color: white; border: 1px solid transparent; transition: 0.3s; }
+        .card:hover { border-color: var(--primary); background: rgba(255,255,255,0.15); }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen p-4">
-    <div class="w-full max-w-2xl bg-gray-900/50 p-6 rounded-3xl border border-gray-800 shadow-2xl">
-        <h1 class="text-2xl font-black text-center mb-6 text-cyan-400 tracking-tighter">TOIBY AI SYSTEM v2.0</h1>
-        
-        <div id="chat" class="chat-box flex flex-col mb-4 p-2">
-            <div class="msg bot shadow-sm">שלום! המערכת מוכנה. איך אוכל לעזור היום?</div>
-        </div>
+<body>
 
-        <div class="flex gap-2 bg-gray-950 p-2 rounded-2xl border border-gray-800">
-            <input id="userInput" type="text" 
-                class="flex-1 bg-transparent p-3 outline-none text-white" 
-                placeholder="הקלד הודעה..."
-                onkeypress="if(event.key==='Enter') send()">
-            <button onclick="send()" id="sendBtn" 
-                class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-3 px-6 rounded-xl transition-all duration-200">
-                שלח
-            </button>
+    <section class="hero">
+        <h1>Toiba Doitsher</h1>
+        <p>AI, Automation & Web Development</p>
+        <div class="projects">
+            <a href="https://form.fillout.com/t/hxPcTnn2CVus" target="_blank" class="card">
+                <h3>פרויקט Fillout ↗</h3>
+                <p>אוטומציית טפסים חכמה</p>
+            </a>
         </div>
-        <div id="loader" class="hidden text-center text-xs text-cyan-500 mt-4 animate-pulse italic">ה-AI חושב...</div>
+    </section>
+
+    <div id="chat-widget-button">💬</div>
+
+    <div id="chat-window">
+        <div id="chat-header">AutoSmart AI Assistant</div>
+        <div id="chat-messages"></div>
+        <div id="chat-input-area">
+            <input type="text" id="chat-input" placeholder="כתבי הודעה..." autocomplete="off">
+            <div id="send-btn">שלחי</div>
+        </div>
     </div>
 
     <script>
-        async function send() {
-            const input = document.getElementById('userInput');
-            const chat = document.getElementById('chat');
-            const loader = document.getElementById('loader');
-            const btn = document.getElementById('sendBtn');
-            const text = input.value.trim();
+        const chatBtn = document.getElementById('chat-widget-button');
+        const chatWin = document.getElementById('chat-window');
+        const input = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const messages = document.getElementById('chat-messages');
 
+        // פתיחה/סגירה של החלון
+        chatBtn.onclick = () => {
+            chatWin.style.display = chatWin.style.display === 'flex' ? 'none' : 'flex';
+        };
+
+        async function sendMessage() {
+            const text = input.value.trim();
             if (!text) return;
 
-            // הוספת הודעת משתמש
-            chat.innerHTML += `<div class="msg user">${text}</div>`;
+            // הצגת הודעת משתמש
+            appendMessage(text, 'user-msg');
             input.value = '';
-            chat.scrollTop = chat.scrollHeight;
-
-            // מצב טעינה
-            loader.classList.remove('hidden');
-            btn.disabled = true;
 
             try {
-                const response = await fetch('/api/chat', {
+                const res = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: text })
+                    body: JSON.stringify({ text })
                 });
-
-                const data = await response.json();
-                
-                if (data.reply) {
-                    chat.innerHTML += `<div class="msg bot">${data.reply}</div>`;
-                } else {
-                    chat.innerHTML += `<div class="msg bot text-red-400">אופס: ${data.error || 'שגיאה לא ידועה'}</div>`;
-                }
-            } catch (error) {
-                chat.innerHTML += `<div class="msg bot text-red-400">שגיאת תקשורת. וודאי ש-Vercel מוגדר נכון.</div>`;
-            } finally {
-                loader.classList.add('hidden');
-                btn.disabled = false;
-                chat.scrollTop = chat.scrollHeight;
+                const data = await res.json();
+                appendMessage(data.reply || data.error, 'bot-msg');
+            } catch (err) {
+                appendMessage("אופס, משהו השתבש בקשר שלי עם השרת.", 'bot-msg');
             }
         }
+
+        function appendMessage(text, className) {
+            const div = document.createElement('div');
+            div.className = `msg ${className}`;
+            div.innerText = text;
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        sendBtn.onclick = sendMessage;
+        input.onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
     </script>
 </body>
 </html>
