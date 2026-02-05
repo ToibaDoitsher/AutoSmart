@@ -1,102 +1,412 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toiba | AI & Automation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary: #6366f1; --dark: #0f172a; --glass: rgba(255, 255, 255, 0.1); }
-        body { margin: 0; background: var(--dark); color: white; font-family: 'Assistant', sans-serif; overflow-x: hidden; }
-        
-        /* רקע ועיצוב */
-        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        h1 { font-size: 3.5rem; margin-bottom: 10px; background: linear-gradient(90deg, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        /* כפתור הבועה של הצ'אט */
-        #chat-widget-button {
-            position: fixed; bottom: 20px; right: 20px;
-            width: 60px; height: 60px; border-radius: 50%;
-            background: var(--primary); color: white;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 1000; transition: transform 0.3s;
-        }
-        #chat-widget-button:hover { transform: scale(1.1); }
+    <title>T.Doitsher | AI פיתוח אתרים & אוטומציה עסקית</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%2306b6d4;stop-opacity:1' /><stop offset='100%25' style='stop-color:%238b5cf6;stop-opacity:1' /></linearGradient><path fill='url(%23g)' d='M94.5,41.5l-8.6-1.4c-0.6-2-1.4-4-2.4-5.8l5.1-7.1c1.1-1.5,0.9-3.6-0.5-4.9l-5.8-5.8c-1.3-1.3-3.4-1.5-4.9-0.5l-7.1,5.1c-1.8-1-3.8-1.8-5.8-2.4l-1.4-8.6C62.8,8.4,61.1,7,59.2,7h-8.2c-1.9,0-3.6,1.4-3.9,3.2l-1.4,8.6c-2,0.6-4,1.4-5.8,2.4L32.8,16c-1.5-1.1-3.6-0.9-4.9,0.5l-5.8,5.8c-1.3,1.3-1.5,3.4-0.5,4.9l5.1,7.1c-1,1.8-1.8,3.8-2.4,5.8l-8.6,1.4C13.8,41.8,12.4,43.5,12.4,45.4v8.2c0,1.9,1.4,3.6,3.2,3.9l8.6,1.4c0.6,2,1.4,4,2.4,5.8l-5.1,7.1c-1.1,1.5-0.9,3.6,0.5,4.9l5.8,5.8c1.3,1.3,3.4,1.5,4.9,0.5l7.1-5.1c1.8,1,3.8,1.8,5.8,2.4l1.4,8.6c0.3,1.9,2,3.2,3.9,3.2h8.2c1.9,0,3.6-1.4,3.9-3.2l1.4-8.6c2-0.6,4-1.4,5.8-2.4l7.1,5.1c1.5,1.1,3.6,0.9,4.9-0.5l5.8-5.8c1.3-1.3,1.5-3.4,0.5-4.9l-5.1-7.1c1-1.8,1.8-3.8,2.4-5.8l8.6-1.4c1.8-0.3,3.2-2,3.2-3.9v-8.2C97.7,43.5,96.3,41.8,94.5,41.5z M55.1,66.4c-9.1,0-16.4-7.4-16.4-16.4s7.4-16.4,16.4-16.4s16.4,7.4,16.4,16.4S64.1,66.4,55.1,66.4z'/></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        /* חלון הצ'אט */
+    <style>
+        :root {
+            --primary: #06b6d4; 
+            --secondary: #8b5cf6; 
+            --dark: #05070f;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: var(--dark);
+            color: white;
+            overflow-x: hidden;
+            cursor: none; 
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0b1328; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+        /* Custom Cursor */
+        #cursor { position: fixed; top: 0; left: 0; width: 20px; height: 20px; border: 2px solid var(--primary); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background 0.3s; mix-blend-mode: difference; }
+        #cursor-dot { position: fixed; top: 0; left: 0; width: 8px; height: 8px; background: var(--primary); border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); }
+
+        /* Glassmorphism */
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
+
+        .glow-text { text-shadow: 0 0 10px rgba(6, 182, 212, 0.7), 0 0 20px rgba(6, 182, 212, 0.5); }
+        .tilt-card { transform-style: preserve-3d; transform: perspective(1000px); }
+        .fade-up { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+        .animate-gradient { background-size: 200% auto; animation: textShine 4s linear infinite; }
+        @keyframes textShine { to { background-position: 200% center; } }
+        #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .typing-cursor::after { content: '|'; animation: blink 1s step-start infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+        
+        #preloader { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
+        .loader { width: 50px; height: 50px; border: 5px solid var(--primary); border-bottom-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- Chat Widget Styles --- */
+        #chat-widget-button {
+            position: fixed; bottom: 30px; left: 30px;
+            width: 60px; height: 60px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; box-shadow: 0 4px 20px rgba(6, 182, 212, 0.4);
+            z-index: 1000; transition: transform 0.3s; font-size: 24px;
+        }
+        #chat-widget-button:hover { transform: scale(1.1) rotate(5deg); }
+
         #chat-window {
-            position: fixed; bottom: 90px; right: 20px;
-            width: 350px; height: 450px;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass);
+            position: fixed; bottom: 100px; left: 30px;
+            width: 350px; height: 480px;
+            background: rgba(10, 15, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             display: none; flex-direction: column;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
             z-index: 1000; overflow: hidden;
+            animation: slideUp 0.4s ease-out;
         }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        #chat-header { background: var(--primary); padding: 15px; text-align: center; font-weight: bold; }
-        #chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        #chat-header { background: linear-gradient(90deg, var(--primary), var(--secondary)); padding: 15px; text-align: center; font-weight: bold; font-size: 1.1rem; }
+        #chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
         
-        .msg { max-width: 80%; padding: 10px; border-radius: 12px; font-size: 0.9rem; }
-        .user-msg { align-self: flex-start; background: var(--glass); }
-        .bot-msg { align-self: flex-end; background: var(--primary); }
+        .msg { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 0.95rem; line-height: 1.4; }
+        .user-msg { align-self: flex-start; background: rgba(255, 255, 255, 0.08); border-bottom-right-radius: 2px; }
+        .bot-msg { align-self: flex-end; background: var(--primary); color: #000; font-weight: 500; border-bottom-left-radius: 2px; }
 
-        #chat-input-area { display: flex; padding: 10px; border-top: 1px solid var(--glass); }
-        #chat-input { flex: 1; background: transparent; border: none; color: white; outline: none; }
-        #send-btn { cursor: pointer; color: var(--primary); font-weight: bold; }
+        .typing-status { font-size: 0.8rem; color: var(--primary); padding: 0 15px 10px; font-style: italic; display: none; }
 
-        /* כרטיסי פרויקטים */
-        .projects { display: flex; justify-content: center; gap: 20px; padding: 20px; }
-        .card { background: var(--glass); padding: 20px; border-radius: 15px; text-decoration: none; color: white; border: 1px solid transparent; transition: 0.3s; }
-        .card:hover { border-color: var(--primary); background: rgba(255,255,255,0.15); }
+        #chat-input-area { display: flex; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); }
+        #chat-input { flex: 1; background: transparent; border: none; color: white; outline: none; font-family: 'Heebo'; }
+        #send-btn { cursor: pointer; color: var(--primary); padding: 0 10px; transition: 0.2s; }
+        #send-btn:hover { transform: scale(1.2); }
     </style>
 </head>
-<body>
+<body class="selection:bg-cyan-500 selection:text-black">
 
-    <section class="hero">
-        <h1>Toiba Doitsher</h1>
-        <p>AI, Automation & Web Development</p>
-        <div class="projects">
-            <a href="https://form.fillout.com/t/hxPcTnn2CVus" target="_blank" class="card">
-                <h3>פרויקט Fillout ↗</h3>
-                <p>אוטומציית טפסים חכמה</p>
+    <div id="preloader">
+        <div class="loader"></div>
+    </div>
+
+    <div id="cursor"></div>
+    <div id="cursor-dot"></div>
+
+    <canvas id="particles"></canvas>
+
+    <nav class="fixed w-full z-50 glass top-0 start-0 border-b border-white/10">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between px-6 py-4">
+            <a href="#" class="flex items-center gap-3 group">
+          <img src="./favicon.png" alt="Toiby Logo" class="h-20 md:h-24 w-auto logo-glow mx-2 transform hover:scale-110 transition-transform">
             </a>
+            <div class="hidden md:flex space-x-8 space-x-reverse text-sm font-medium">
+                <a href="#services" class="hover:text-cyan-400 transition-colors">שירותים</a>
+                <a href="#projects" class="hover:text-cyan-400 transition-colors">פרויקטים</a>
+                <a href="#stats" class="hover:text-cyan-400 transition-colors">מספרים</a>
+                <a href="#contact" class="px-5 py-2 bg-cyan-600/20 text-cyan-400 border border-cyan-500/50 rounded-full hover:bg-cyan-500 hover:text-black transition-all">צור קשר</a>
+            </div>
         </div>
-    </section>
+    </nav>
 
-    <div id="chat-widget-button">💬</div>
+    <main class="pt-32 pb-10 px-6 max-w-7xl mx-auto relative z-10">
+        <section class="min-h-[80vh] flex flex-col justify-center items-center text-center relative">
+            <div class="absolute top-10 w-64 h-64 bg-cyan-500/20 rounded-full blur-[100px] -z-10 animate-pulse"></div>
+            <h2 class="text-cyan-400 tracking-[0.2em] text-sm font-bold mb-4 fade-up">FUTURE OF BUSINESS</h2>
+            <h1 class="text-5xl md:text-8xl font-black mb-6 leading-tight fade-up">
+                פתרונות <span class="bg-gradient-to-r from-cyan-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent animate-gradient">חכמים</span><br>
+                לעסק שלך
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 h-8 fade-up">
+                אני מתמחה ב<span id="typewriter" class="text-cyan-400 font-bold typing-cursor"></span>
+            </p>
+            <p class="max-w-2xl text-gray-400 mb-10 leading-relaxed fade-up">
+                הגיע הזמן שהעסק יעבוד בשבילך. מערכות אוטומציה שמחליפות עבודה ידנית, חוסכות זמן ומייצרות רווחים, בטכנולוגיה המתקדמת ביותר.
+            </p>
+            <div class="flex gap-4 fade-up">
+                <a href="#contact" class="group relative px-8 py-4 bg-white text-black font-bold rounded-full overflow-hidden">
+                    <span class="relative z-10 group-hover:text-white transition-colors">התחל עכשיו</span>
+                    <div class="absolute inset-0 bg-cyan-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
+                </a>
+                <a href="#projects" class="px-8 py-4 border border-white/20 rounded-full hover:bg-white/10 transition-all backdrop-blur-sm">
+                    תיק עבודות
+                </a>
+            </div>
+        </section>
 
+        <section id="stats" class="grid grid-cols-2 md:grid-cols-4 gap-8 py-20 border-y border-white/5 bg-white/5 rounded-3xl mb-24 glass fade-up">
+            <div class="text-center">
+                <div class="text-4xl font-black text-cyan-400 counter" data-target="100">0</div>
+                <div class="text-sm text-gray-400 mt-2">% דיוק בנתונים</div>
+            </div>
+            <div class="text-center">
+                <div class="text-4xl font-black text-purple-400 counter" data-target="50">0</div>
+                <div class="text-sm text-gray-400 mt-2">+ פרויקטים מוצלחים</div>
+            </div>
+            <div class="text-center">
+                <div class="text-4xl font-black text-cyan-400 counter" data-target="24">0</div>
+                <div class="text-sm text-gray-400 mt-2">/7 מערכות עובדות</div>
+            </div>
+            <div class="text-center">
+                <div class="text-4xl font-black text-purple-400 counter" data-target="1000">0</div>
+                <div class="text-sm text-gray-400 mt-2">+ שעות נחסכו</div>
+            </div>
+        </section>
+
+        <section id="services" class="py-20">
+            <h2 class="text-4xl font-bold mb-16 text-center fade-up"><span class="border-b-4 border-cyan-500 pb-2">השירותים שלי</span></h2>
+            <div class="grid md:grid-cols-3 gap-8 perspective-1000">
+                <div class="glass p-8 rounded-3xl tilt-card relative overflow-hidden group fade-up">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                    <div class="w-14 h-14 bg-cyan-900/50 rounded-2xl flex items-center justify-center mb-6 text-cyan-400 text-2xl group-hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">אוטומציה עסקית</h3>
+                    <p class="text-gray-400 leading-relaxed">בניית "רובוטים" דיגיטליים שמבצעים משימות חוזרות. חיבור Make, Zapier וניהול תהליכים אוטומטי מלא.</p>
+                </div>
+                <div class="glass p-8 rounded-3xl tilt-card relative overflow-hidden group fade-up" style="transition-delay: 100ms;">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-cyan-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                    <div class="w-14 h-14 bg-purple-900/50 rounded-2xl flex items-center justify-center mb-6 text-purple-400 text-2xl group-hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-link"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">אינטגרציות API</h3>
+                    <p class="text-gray-400 leading-relaxed">הכל מדבר עם הכל. חיבור ה-CRM לוואטסאפ, למייל, ליומן גוגל ולמערכת הנהלת החשבונות.</p>
+                </div>
+                <div class="glass p-8 rounded-3xl tilt-card relative overflow-hidden group fade-up" style="transition-delay: 200ms;">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                    <div class="w-14 h-14 bg-cyan-900/50 rounded-2xl flex items-center justify-center mb-6 text-cyan-400 text-2xl group-hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">בינה מלאכותית (AI)</h3>
+                    <p class="text-gray-400 leading-relaxed">הטמעת ChatGPT וכלים חכמים לניתוח נתונים, יצירת תוכן אוטומטי ושיפור קבלת החלטות.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-20">
+            <h2 class="text-4xl font-bold mb-16 text-center fade-up">מערכות לדוגמה</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <a href="https://form.fillout.com/t/hxPcTnn2CVus" target="_blank" class="group relative block h-64 rounded-2xl overflow-hidden glass fade-up">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10 opacity-60"></div>
+                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80')] bg-cover bg-center transition-transform duration-700 group-hover:scale-110"></div>
+                    <div class="absolute bottom-0 p-6 z-20 w-full">
+                        <h3 class="text-xl font-bold text-white mb-1 group-hover:text-cyan-400 transition-colors">ניהול לידים חכם</h3>
+                        <p class="text-sm text-gray-300 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">מערכת סינון וקליטה אוטומטית</p>
+                    </div>
+                </a>
+                <a href="https://form.fillout.com/t/3SJjK1C6dUus" target="_blank" class="group relative block h-64 rounded-2xl overflow-hidden glass fade-up">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10 opacity-60"></div>
+                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80')] bg-cover bg-center transition-transform duration-700 group-hover:scale-110"></div>
+                    <div class="absolute bottom-0 p-6 z-20 w-full">
+                        <h3 class="text-xl font-bold text-white mb-1 group-hover:text-purple-400 transition-colors">סנכרון CRM</h3>
+                        <p class="text-sm text-gray-300 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">חיבור מערכות מידע בזמן אמת</p>
+                    </div>
+                </a>
+                <a href="https://form.fillout.com/t/rfV33PGun3us" target="_blank" class="group relative block h-64 rounded-2xl overflow-hidden glass fade-up">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10 opacity-60"></div>
+                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80')] bg-cover bg-center transition-transform duration-700 group-hover:scale-110"></div>
+                    <div class="absolute bottom-0 p-6 z-20 w-full">
+                        <h3 class="text-xl font-bold text-white mb-1 group-hover:text-cyan-400 transition-colors">AI Marketing</h3>
+                        <p class="text-sm text-gray-300 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">מחולל תוכן שיווקי מבוסס בינה</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <section id="contact" class="py-24 text-center relative overflow-hidden rounded-3xl mt-10">
+            <div class="absolute inset-0 bg-gradient-to-r from-cyan-900/20 to-purple-900/20 glass border border-white/10 rounded-3xl -z-10"></div>
+            <h2 class="text-5xl font-bold mb-6 glow-text fade-up">מוכנים לשדרג?</h2>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto mb-10 fade-up">השיחה הראשונה היא השלב הראשון בדרך לעסק שעובד לבד. בואו נבדוק יחד איך אוטומציה יכולה לחסוך לכם כסף.</p>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-6 fade-up">
+                <a href="mailto:t025959714@gmail.com?subject=התעניינות באוטומציה" class="flex items-center gap-3 px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-xl transition-all hover:scale-105 shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+                    <i class="fa-solid fa-envelope"></i> שלחי לי מייל
+                </a>
+                <div class="text-xl font-mono text-cyan-300 tracking-wider">052-7179418</div>
+            </div>
+        </section>
+    </main>
+
+    <div id="chat-widget-button"><i class="fa-solid fa-robot"></i></div>
     <div id="chat-window">
-        <div id="chat-header">AutoSmart AI Assistant</div>
-        <div id="chat-messages"></div>
+        <div id="chat-header">AutoSmart AI Support</div>
+        <div id="chat-messages">
+            <div class="msg bot-msg">שלום! אני העוזרת החכמה של טויבי. איך אוכל לעזור לך היום?</div>
+        </div>
+        <div id="typing-status" class="typing-status">הבינה מקלידה...</div>
         <div id="chat-input-area">
             <input type="text" id="chat-input" placeholder="כתבי הודעה..." autocomplete="off">
-            <div id="send-btn">שלחי</div>
+            <div id="send-btn"><i class="fa-solid fa-paper-plane"></i></div>
         </div>
     </div>
 
+    <audio id="sound-pop" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
+
+    <footer class="text-center py-8 text-gray-600 text-sm border-t border-white/5 relative z-10 glass">
+        <p>© 2024 T.Doitsher Automation. All systems operational.</p>
+    </footer>
+
     <script>
+        // 1. Preloader Logic
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            preloader.style.opacity = '0';
+            setTimeout(() => { preloader.style.display = 'none'; }, 500);
+        });
+
+        // 2. Custom Cursor Logic
+        const cursor = document.getElementById('cursor');
+        const cursorDot = document.getElementById('cursor-dot');
+        document.addEventListener('mousemove', (e) => {
+            cursorDot.style.left = e.clientX + 'px';
+            cursorDot.style.top = e.clientY + 'px';
+            setTimeout(() => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; }, 80);
+        });
+
+        // 3. Canvas Particles
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particlesArray = [];
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = (Math.random() * 1) - 0.5;
+                this.speedY = (Math.random() * 1) - 0.5;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(6, 182, 212, 0.5)';
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < 50; i++) { particlesArray.push(new Particle()); }
+        }
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update(); particlesArray[i].draw();
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 150) {
+                        ctx.strokeStyle = `rgba(6, 182, 212, ${1 - distance/150})`;
+                        ctx.lineWidth = 0.5; ctx.beginPath();
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y); ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles(); animateParticles();
+
+        // 4. Typewriter Effect
+        const words = ["אוטומציה עסקית", "בניית אתרים", "בינה מלאכותית", "חיסכון בזמן"];
+        let wordIdx = 0;
+        function typeWriter() {
+            const element = document.getElementById("typewriter");
+            const word = words[wordIdx];
+            let c = 0;
+            element.textContent = "";
+            const typing = setInterval(() => {
+                element.textContent += word.charAt(c); c++;
+                if (c >= word.length) {
+                    clearInterval(typing);
+                    setTimeout(eraseWriter, 2000);
+                }
+            }, 100);
+        }
+        function eraseWriter() {
+            const element = document.getElementById("typewriter");
+            let word = element.textContent;
+            const erasing = setInterval(() => {
+                element.textContent = word.substring(0, word.length - 1);
+                word = element.textContent;
+                if (word.length <= 0) {
+                    clearInterval(erasing);
+                    wordIdx = (wordIdx + 1) % words.length;
+                    typeWriter();
+                }
+            }, 50);
+        }
+        setTimeout(typeWriter, 1500);
+
+        // 5. Intersection Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    if(entry.target.querySelector('.counter')) {
+                        entry.target.querySelectorAll('.counter').forEach(counter => {
+                            const target = +counter.getAttribute('data-target');
+                            let current = 0;
+                            const step = target / 50;
+                            const update = () => {
+                                if(current < target) {
+                                    current += step; counter.innerText = Math.ceil(current);
+                                    setTimeout(update, 20);
+                                } else { counter.innerText = target; }
+                            };
+                            update();
+                        });
+                    }
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-up, #stats').forEach((el) => observer.observe(el));
+
+        // 6. 3D Tilt
+        document.querySelectorAll('.tilt-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const rotateX = ((e.clientY - rect.top - rect.height/2) / (rect.height/2)) * -10;
+                const rotateY = ((e.clientX - rect.left - rect.width/2) / (rect.width/2)) * 10;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+            });
+            card.addEventListener('mouseleave', () => card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale(1)`);
+        });
+
+        // --- Chat Logic ---
         const chatBtn = document.getElementById('chat-widget-button');
         const chatWin = document.getElementById('chat-window');
-        const input = document.getElementById('chat-input');
+        const chatInput = document.getElementById('chat-input');
         const sendBtn = document.getElementById('send-btn');
-        const messages = document.getElementById('chat-messages');
+        const chatMessages = document.getElementById('chat-messages');
+        const typingStatus = document.getElementById('typing-status');
+        const soundPop = document.getElementById('sound-pop');
 
-        // פתיחה/סגירה של החלון
         chatBtn.onclick = () => {
             chatWin.style.display = chatWin.style.display === 'flex' ? 'none' : 'flex';
         };
 
-        async function sendMessage() {
-            const text = input.value.trim();
+        async function handleSend() {
+            const text = chatInput.value.trim();
             if (!text) return;
 
-            // הצגת הודעת משתמש
+            // User Message
             appendMessage(text, 'user-msg');
-            input.value = '';
+            chatInput.value = '';
+            soundPop.play();
+
+            // Simulate Thinking
+            typingStatus.style.display = 'block';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
                 const res = await fetch('/api/chat', {
@@ -105,9 +415,12 @@
                     body: JSON.stringify({ text })
                 });
                 const data = await res.json();
-                appendMessage(data.reply || data.error, 'bot-msg');
+                
+                typingStatus.style.display = 'none';
+                typeBotResponse(data.reply || "סליחה, אני חווה קושי קל בחיבור.");
             } catch (err) {
-                appendMessage("אופס, משהו השתבש בקשר שלי עם השרת.", 'bot-msg');
+                typingStatus.style.display = 'none';
+                appendMessage("נראה שיש בעיה בשרת, נסו שוב מאוחר יותר.", 'bot-msg');
             }
         }
 
@@ -115,12 +428,25 @@
             const div = document.createElement('div');
             div.className = `msg ${className}`;
             div.innerText = text;
-            messages.appendChild(div);
-            messages.scrollTop = messages.scrollHeight;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        sendBtn.onclick = sendMessage;
-        input.onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
+        function typeBotResponse(fullText) {
+            const div = document.createElement('div');
+            div.className = 'msg bot-msg';
+            chatMessages.appendChild(div);
+            let i = 0;
+            const interval = setInterval(() => {
+                div.innerText += fullText.charAt(i);
+                i++;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                if (i >= fullText.length) clearInterval(interval);
+            }, 30);
+        }
+
+        sendBtn.onclick = handleSend;
+        chatInput.onkeypress = (e) => { if(e.key === 'Enter') handleSend(); };
     </script>
 </body>
 </html>
