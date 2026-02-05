@@ -12,6 +12,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        .typing {
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
         :root {
             --primary: #06b6d4; /* Cyan 500 */
             --secondary: #8b5cf6; /* Violet 500 */
@@ -596,6 +602,8 @@
         };
 
         async function sendMessage() {
+            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
+audio.play();
             const text = chatInput.value.trim();
             if (!text) return;
 
@@ -603,15 +611,28 @@
             appendMessage(text, 'user-msg');
             chatInput.value = '';
 
-            try {
-                const res = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text })
-                });
-                const data = await res.json();
-                appendMessage(data.reply || data.error, 'bot-msg');
-            } catch (err) {
+           try {
+    // הצגת הודעת "חושב..."
+    const typingIndicator = document.createElement('div');
+    typingIndicator.className = 'msg bot-msg typing';
+    typingIndicator.innerText = "רובי חושב...";
+    chatMessages.appendChild(typingIndicator);
+
+    const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    
+    // הסרת הודעת "חושב"
+    chatMessages.removeChild(typingIndicator);
+
+    // אפקט הקלדה של התשובה
+    const replyText = data.reply || data.error;
+    appendTypingMessage(replyText, 'bot-msg');
+    
+} catch (err) {
                 appendMessage("אופס, משהו השתבש בקשר שלי עם השרת.", 'bot-msg');
             }
         }
